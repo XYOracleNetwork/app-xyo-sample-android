@@ -117,7 +117,9 @@ class ItemListFragment : Fragment() {
         }
         setupRecyclerView(recyclerView, onClickListener, onContextClickListener)
         xyoScope.launch {
-            XyoPanelWrapper.onAppLoad()
+            context?.let {
+                XyoPanelWrapper.onAppLoad(it)
+            }
             this@ItemListFragment.activity?.runOnUiThread {
                 recyclerView.adapter?.notifyDataSetChanged()
             }
