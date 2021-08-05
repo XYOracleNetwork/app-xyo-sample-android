@@ -12,11 +12,11 @@ import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import network.xyo.app.xyo.sample.application.databinding.FragmentItemListBinding
 import network.xyo.app.xyo.sample.application.databinding.ItemListContentBinding
 import network.xyo.client.XyoBoundWitnessJson
-import network.xyo.client.xyoScope
 
 /**
  * A Fragment representing a list of Pings. This fragment
@@ -116,13 +116,11 @@ class ItemListFragment : Fragment() {
             true
         }
         setupRecyclerView(recyclerView, onClickListener, onContextClickListener)
-        xyoScope.launch {
-            context?.let {
-                XyoPanelWrapper.onAppLoad(it)
-            }
-            this@ItemListFragment.activity?.runOnUiThread {
-                recyclerView.adapter?.notifyDataSetChanged()
-            }
+        context?.let {
+            XyoPanelWrapper.onAppLoad(it)
+        }
+        this@ItemListFragment.activity?.runOnUiThread {
+            recyclerView.adapter?.notifyDataSetChanged()
         }
     }
 
