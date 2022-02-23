@@ -1,12 +1,14 @@
 package network.xyo.app.xyo.sample.application
 
 import android.content.Context
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
-import network.xyo.client.XyoBoundWitnessJson
 import network.xyo.client.XyoPanel
+import network.xyo.client.boundwitness.XyoBoundWitnessJson
 import network.xyo.client.witness.system.info.XyoSystemInfoWitness
 
 class XyoPanelWrapper {
+    @ExperimentalCoroutinesApi
     companion object {
         private var panel: XyoPanel? = null
         fun onAppLoad(context: Context) {

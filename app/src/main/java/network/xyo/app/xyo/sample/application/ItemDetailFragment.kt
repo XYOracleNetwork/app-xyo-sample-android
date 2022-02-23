@@ -7,10 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import network.xyo.app.xyo.sample.application.databinding.FragmentItemDetailBinding
-import network.xyo.client.XyoBoundWitnessJson
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import kotlin.reflect.jvm.internal.impl.load.kotlin.JvmType
+import network.xyo.client.boundwitness.XyoBoundWitnessJson
 
 
 /**

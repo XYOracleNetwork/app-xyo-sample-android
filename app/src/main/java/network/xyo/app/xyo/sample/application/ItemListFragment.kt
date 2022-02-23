@@ -12,11 +12,9 @@ import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import network.xyo.app.xyo.sample.application.databinding.FragmentItemListBinding
 import network.xyo.app.xyo.sample.application.databinding.ItemListContentBinding
-import network.xyo.client.XyoBoundWitnessJson
+import network.xyo.client.boundwitness.XyoBoundWitnessJson
 
 /**
  * A Fragment representing a list of Pings. This fragment
