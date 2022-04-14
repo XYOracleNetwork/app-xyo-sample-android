@@ -8,12 +8,12 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/item_list"
-        android:name="network.xyo.app.xyo.sample.application.ItemListFragment"
+        android:name="@string/boundwitness_list_name"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         app:layoutManager="LinearLayoutManager"
-        tools:context="network.xyo.app.xyo.sample.application.ItemDetailHostActivity"
+        tools:context="network.xyo.app.xyo.sample.application.MainActivity"
         tools:listitem="@layout/item_list_content" />
 </androidx.constraintlayout.widget.ConstraintLayout>

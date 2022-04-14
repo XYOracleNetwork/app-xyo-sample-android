@@ -5,12 +5,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
-import network.xyo.app.xyo.sample.application.databinding.FragmentItemDetailBinding
-import network.xyo.client.XyoBoundWitnessJson
+import com.paulvarry.jsonviewer.JsonViewer
+import network.xyo.app.xyo.sample.application.databinding.BoundwitnessDetailBinding
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import kotlin.reflect.jvm.internal.impl.load.kotlin.JvmType
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import network.xyo.client.boundwitness.XyoBoundWitnessJson
+import org.json.JSONObject
+import org.json.JSONTokener
 
 
 /**
@@ -19,6 +21,7 @@ import kotlin.reflect.jvm.internal.impl.load.kotlin.JvmType
  * in two-pane mode (on larger screen devices) or self-contained
  * on handsets.
  */
+@ExperimentalCoroutinesApi
 class ItemDetailFragment : Fragment() {
 
     /**
@@ -26,9 +29,9 @@ class ItemDetailFragment : Fragment() {
      */
     private var item: XyoBoundWitnessJson? = null
 
-    lateinit var itemDetailTextView: TextView
+    private var jsonViewer: JsonViewer? = null
 
-    private var _binding: FragmentItemDetailBinding? = null
+    private var _binding: BoundwitnessDetailBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -50,15 +53,15 @@ class ItemDetailFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        _binding = FragmentItemDetailBinding.inflate(inflater, container, false)
+        _binding = BoundwitnessDetailBinding.inflate(inflater, container, false)
         val rootView = binding.root
 
         binding.toolbarLayout?.title = item?._hash?.substring(0, 5)
 
-        itemDetailTextView = binding.itemDetail
+        jsonViewer = binding.jsonViewer
         // Show the placeholder content as text in a TextView.
         item?.let {
-            itemDetailTextView.text = objToJson(it)
+            jsonViewer?.setJson(objToJson(it))
         }
 
         return rootView
@@ -71,12 +74,13 @@ class ItemDetailFragment : Fragment() {
          */
         const val ARG_ITEM_HASH = "item_hash"
 
-        fun objToJson(obj: Any): String {
+        fun objToJson(obj: Any): JSONObject {
             val moshi = Moshi.Builder()
                 .addLast(KotlinJsonAdapterFactory())
                 .build()
             val adapter = moshi.adapter(obj.javaClass)
-            return adapter.toJson(obj)
+            val jsonString = adapter.toJson(obj)
+            return JSONTokener(jsonString).nextValue() as JSONObject
         }
     }
 

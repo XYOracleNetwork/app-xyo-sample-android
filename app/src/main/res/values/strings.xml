@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">XYO Sample Application</string>
     <string name="title_item_detail">Item Detail</string>
+    <string name="boundwitness_list_name">BoundWitnesses</string>
 </resources>

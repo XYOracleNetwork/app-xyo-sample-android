@@ -8,7 +8,7 @@
         android:id="@+id/fragment_item_detail"
         android:name="network.xyo.app.xyo.sample.application.ItemDetailFragment"
         android:label="@string/title_item_detail"
-        tools:layout="@layout/fragment_item_detail">
+        tools:layout="@layout/boundwitness_detail">
         <argument
             android:name="item_id"
             android:defaultValue=""

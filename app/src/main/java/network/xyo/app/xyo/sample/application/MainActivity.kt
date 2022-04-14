@@ -7,11 +7,9 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import network.xyo.app.xyo.sample.application.databinding.ActivityItemDetailBinding
 
-class ItemDetailHostActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
 
