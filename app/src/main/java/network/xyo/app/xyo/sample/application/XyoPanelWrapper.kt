@@ -12,7 +12,7 @@ class XyoPanelWrapper {
     companion object {
         private var panel: XyoPanel? = null
         fun onAppLoad(context: Context) {
-            panel = XyoPanel(context, "test", "https://beta.archivist.xyo.network", listOf(XyoSystemInfoWitness()))
+            panel = XyoPanel(context, "temp", "https://beta.archivist.xyo.network", listOf(XyoSystemInfoWitness()))
             panel?.let {
                 runBlocking {
                     boundWitnesses.add(it.reportAsync().bw)

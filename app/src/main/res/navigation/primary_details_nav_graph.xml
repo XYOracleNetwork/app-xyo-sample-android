@@ -7,8 +7,8 @@
 
     <fragment
         android:id="@+id/item_list_fragment"
-        android:name="network.xyo.app.xyo.sample.application.ItemListFragment"
-        android:label="ItemListFragment">
+        android:name="network.xyo.app.xyo.sample.application.BoundWitnessListFragment"
+        android:label="Bound Witnesses">
         <action
             android:id="@+id/show_item_detail"
             app:destination="@id/item_detail_fragment" />
@@ -16,8 +16,8 @@
     <fragment
         android:id="@+id/item_detail_fragment"
         android:name="network.xyo.app.xyo.sample.application.ItemDetailFragment"
-        android:label="item_detail"
-        tools:layout="@layout/fragment_item_detail">
+        android:label="Bound Witness"
+        tools:layout="@layout/boundwitness_detail">
         <argument
             android:name="item_id"
             android:defaultValue=""

@@ -12,7 +12,8 @@ import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
-import network.xyo.app.xyo.sample.application.databinding.FragmentItemListBinding
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import network.xyo.app.xyo.sample.application.databinding.BoundwitnessListBinding
 import network.xyo.app.xyo.sample.application.databinding.ItemListContentBinding
 import network.xyo.client.boundwitness.XyoBoundWitnessJson
 
@@ -25,7 +26,8 @@ import network.xyo.client.boundwitness.XyoBoundWitnessJson
  * item details side-by-side using two vertical panes.
  */
 
-class ItemListFragment : Fragment() {
+@OptIn(ExperimentalCoroutinesApi::class)
+class BoundWitnessListFragment : Fragment() {
 
     /**
      * Method to intercept global key events in the
@@ -54,7 +56,7 @@ class ItemListFragment : Fragment() {
             result
         }
 
-    private var _binding: FragmentItemListBinding? = null
+    private var _binding: BoundwitnessListBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -65,7 +67,7 @@ class ItemListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
 
-        _binding = FragmentItemListBinding.inflate(inflater, container, false)
+        _binding = BoundwitnessListBinding.inflate(inflater, container, false)
         return binding.root
 
     }
@@ -117,7 +119,7 @@ class ItemListFragment : Fragment() {
         context?.let {
             XyoPanelWrapper.onAppLoad(it)
         }
-        this@ItemListFragment.activity?.runOnUiThread {
+        this@BoundWitnessListFragment.activity?.runOnUiThread {
             recyclerView.adapter?.notifyDataSetChanged()
         }
     }

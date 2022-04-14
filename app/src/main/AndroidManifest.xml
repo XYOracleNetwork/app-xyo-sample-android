@@ -11,7 +11,7 @@
         android:theme="@style/Theme.XYOSampleApplication">
         <activity
             android:exported="true"
-            android:name=".ItemDetailHostActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
