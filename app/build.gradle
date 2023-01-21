@@ -36,6 +36,7 @@ android {
     buildFeatures {
         viewBinding true
     }
+    namespace 'network.xyo.app.xyo.sample.application'
 }
 
 dependencies {
