@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
@@ -15,7 +16,9 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import network.xyo.app.xyo.sample.application.databinding.BoundwitnessListBinding
 import network.xyo.app.xyo.sample.application.databinding.ItemListContentBinding
+import network.xyo.client.XyoPanelReportResult
 import network.xyo.client.boundwitness.XyoBoundWitnessJson
+import network.xyo.client.node.client.QueryResponseWrapper
 
 /**
  * A Fragment representing a list of Pings. This fragment
@@ -72,6 +75,7 @@ class BoundWitnessListFragment : Fragment() {
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -87,11 +91,11 @@ class BoundWitnessListFragment : Fragment() {
          * a single pane layout or two pane layout
          */
         val onClickListener = View.OnClickListener { itemView ->
-            val item = itemView.tag as XyoBoundWitnessJson
+            val item = itemView.tag as QueryResponseWrapper
             val bundle = Bundle()
             bundle.putString(
                 ItemDetailFragment.ARG_ITEM_HASH,
-                item._hash
+                item.bwHash
             )
             if (itemDetailFragmentContainer != null) {
                 itemDetailFragmentContainer.findNavController()
@@ -107,10 +111,10 @@ class BoundWitnessListFragment : Fragment() {
          * experience on larger screen devices
          */
         val onContextClickListener = View.OnContextClickListener { v ->
-            val item = v.tag as XyoBoundWitnessJson
+            val item = v.tag as QueryResponseWrapper
             Toast.makeText(
                 v.context,
-                "Context click of item " + item._hash,
+                "Context click of item " + item.bwHash,
                 Toast.LENGTH_LONG
             ).show()
             true
@@ -124,6 +128,7 @@ class BoundWitnessListFragment : Fragment() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun setupRecyclerView(
         recyclerView: RecyclerView,
         onClickListener: View.OnClickListener,
@@ -138,7 +143,7 @@ class BoundWitnessListFragment : Fragment() {
     }
 
     class SimpleItemRecyclerViewAdapter(
-        private val values: List<XyoBoundWitnessJson>,
+        private val values: MutableList<QueryResponseWrapper>,
         private val onClickListener: View.OnClickListener,
         private val onContextClickListener: View.OnContextClickListener
     ) :
@@ -154,8 +159,8 @@ class BoundWitnessListFragment : Fragment() {
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val item = values[position]
-            holder.idView.text = item._hash?.substring(0, 5)
-            holder.contentView.text = item._hash?.substring(0, 7)
+            holder.idView.text = item.bwHash?.substring(0, 5)
+            holder.contentView.text = item.bwHash?.substring(0, 5)
 
             with(holder.itemView) {
                 tag = item
