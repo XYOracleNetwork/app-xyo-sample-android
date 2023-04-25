@@ -40,6 +40,13 @@ android {
 }
 
 dependencies {
+//    Uncomment to have dependencies that end in '-SNAPSHOT' update more frequently during local development
+//    See: https://docs.gradle.org/current/userguide/dependency_management.html#sec:controlling_dependency_caching_programmatically
+//
+//    configurations.all {
+//        resolutionStrategy.cacheChangingModulesFor 2, 'minutes'
+//    }
+
     implementation "org.jetbrains.kotlin:kotlin-reflect:1.8.20"
     implementation 'androidx.core:core-ktx:1.8.0'
     implementation 'androidx.appcompat:appcompat:1.6.1'
@@ -50,7 +57,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.1'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.5.3'
     implementation 'androidx.navigation:navigation-ui-ktx:2.5.3'
-    implementation 'com.github.xyoraclenetwork:sdk-xyo-client-android:2.1.5'
+    implementation 'com.github.xyoraclenetwork:sdk-xyo-client-android:node-client-SNAPSHOT'
     implementation 'com.squareup.moshi:moshi-kotlin:1.14.0'
     implementation 'com.github.pvarry:android-json-viewer:v1.1'
     testImplementation 'junit:junit:4.+'
