@@ -19,7 +19,7 @@ class XyoPanelWrapper {
         private var panel: XyoPanel? = null
         fun onAppLoad(context: Context) {
             val account = XyoAccount()
-            panel = XyoPanel(context, arrayListOf(Pair("https://beta.api.archivist.xyo.network/Archivist", account)), listOf(XyoSystemInfoWitness()))
+            panel = XyoPanel(context, arrayListOf(Pair("https://node.xyo.coinapp.co/Archivist", account)), listOf(XyoSystemInfoWitness()))
             panel?.let {
                 runBlocking {
                     it.reportAsyncQuery().apiResults.forEach{ action ->
