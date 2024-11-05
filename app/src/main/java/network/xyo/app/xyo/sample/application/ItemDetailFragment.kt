@@ -21,7 +21,7 @@ import org.json.JSONTokener
 
 /**
  * A fragment representing a single Item detail screen.
- * This fragment is either contained in a [ItemListFragment]
+ * This fragment is either contained in a ItemListFragment
  * in two-pane mode (on larger screen devices) or self-contained
  * on handsets.
  */
@@ -56,7 +56,7 @@ class ItemDetailFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         _binding = BoundwitnessDetailBinding.inflate(inflater, container, false)
         val rootView = binding.root
