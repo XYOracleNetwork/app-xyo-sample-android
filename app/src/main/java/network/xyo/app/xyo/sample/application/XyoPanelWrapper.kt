@@ -16,11 +16,11 @@ class XyoPanelWrapper {
     @ExperimentalCoroutinesApi
     @RequiresApi(Build.VERSION_CODES.M)
     companion object {
-        private var panel: XyoPanel? = null
         fun onAppLoad(context: Context) {
+            val panel: XyoPanel?
             val account = XyoAccount()
             panel = XyoPanel(context, arrayListOf(Pair("https://node.xyo.coinapp.co/Archivist", account)), listOf(XyoSystemInfoWitness()))
-            panel?.let {
+            panel.let {
                 runBlocking {
                     it.reportAsyncQuery().apiResults.forEach{ action ->
                         if (action.response !== null) {

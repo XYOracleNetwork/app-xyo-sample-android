@@ -7,12 +7,10 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.XYOSampleApplication"
-        android:usesCleartextTraffic="true">
+        android:theme="@style/Theme.XYOSampleApplication">
         <activity
             android:exported="true"
-            android:name=".MainActivity"
-            android:label="@string/app_name">
+            android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
