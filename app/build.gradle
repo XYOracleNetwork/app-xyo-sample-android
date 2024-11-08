@@ -59,6 +59,7 @@ dependencies {
     implementation 'com.github.xyoraclenetwork:sdk-xyo-client-android:main-SNAPSHOT'
     implementation 'com.squareup.moshi:moshi-kotlin:1.15.1'
     implementation 'com.github.pvarry:android-json-viewer:v1.1'
+    implementation 'com.vmadalin:easypermissions-ktx:1.0.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
