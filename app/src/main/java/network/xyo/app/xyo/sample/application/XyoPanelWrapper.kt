@@ -9,6 +9,7 @@ import kotlinx.coroutines.runBlocking
 import network.xyo.client.XyoPanel
 import network.xyo.client.address.XyoAccount
 import network.xyo.client.node.client.QueryResponseWrapper
+import network.xyo.client.witness.location.info.XyoLocationWitness
 import network.xyo.client.witness.system.info.XyoSystemInfoWitness
 
 class XyoPanelWrapper {
@@ -18,7 +19,8 @@ class XyoPanelWrapper {
         fun onAppLoad(context: Context) {
             val panel: XyoPanel?
             val account = XyoAccount()
-            panel = XyoPanel(context, arrayListOf(Pair("https://beta.api.archivist.xyo.network/Archivist", account)), listOf(XyoSystemInfoWitness()))
+
+            panel = XyoPanel(context, arrayListOf(Pair("https://beta.api.archivist.xyo.network/Archivist", account)), listOf(XyoSystemInfoWitness(), XyoLocationWitness()))
             panel.let {
                 runBlocking {
                     it.reportAsyncQuery().apiResults?.forEach{ action ->
