@@ -1,6 +1,8 @@
 package network.xyo.app.xyo.sample.application
 
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -8,6 +10,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import network.xyo.app.xyo.sample.application.databinding.ActivityItemDetailBinding
+import network.xyo.app.xyo.sample.application.databinding.BoundwitnessListBinding
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,11 +27,24 @@ class MainActivity : AppCompatActivity() {
         val navController = navHostFragment.navController
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)
+
+//        setupLocationWitnessButton()
     }
 
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_item_detail)
         return navController.navigateUp(appBarConfiguration)
                 || super.onSupportNavigateUp()
+    }
+
+    private fun setupLocationWitnessButton() {
+        // TODO - figure out how to find the button
+        val binding = BoundwitnessListBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        binding.witnessLocationButton?.setOnClickListener {
+            val intent = Intent(this, LocationWitnessActivity::class.java)
+            startActivity(intent)
+        }
     }
 }

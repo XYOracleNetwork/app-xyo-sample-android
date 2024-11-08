@@ -12,6 +12,8 @@ import network.xyo.client.node.client.QueryResponseWrapper
 import network.xyo.client.witness.location.info.XyoLocationWitness
 import network.xyo.client.witness.system.info.XyoSystemInfoWitness
 
+const val nodeUrl = "https://beta.api.archivist.xyo.network/Archivist"
+
 class XyoPanelWrapper {
     @ExperimentalCoroutinesApi
     @RequiresApi(Build.VERSION_CODES.M)
@@ -20,7 +22,7 @@ class XyoPanelWrapper {
             val panel: XyoPanel?
             val account = XyoAccount()
 
-            panel = XyoPanel(context, arrayListOf(Pair("https://beta.api.archivist.xyo.network/Archivist", account)), listOf(XyoSystemInfoWitness(), XyoLocationWitness()))
+            panel = XyoPanel(context, arrayListOf(Pair(nodeUrl, account)), listOf(XyoSystemInfoWitness(), XyoLocationWitness()))
             panel.let {
                 runBlocking {
                     it.reportAsyncQuery().apiResults?.forEach{ action ->
