@@ -62,9 +62,9 @@ class LocationWitnessActivity : LocationActivity() {
                         Looper.prepare()
                         Toast.makeText(context, "Location saved to archivist! - ${result.data?.schema}", Toast.LENGTH_SHORT).show()
                     }
-                    else -> {
+                    is WitnessResult.Error -> {
                         Looper.prepare()
-                        Toast.makeText(context, "Location was NOT Saved to archivist!", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, "Location was NOT Saved to archivist! - ${result.exception.first().message}", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
