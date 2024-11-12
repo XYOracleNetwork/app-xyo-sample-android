@@ -52,7 +52,7 @@ class LocationWitnessActivity : LocationActivity() {
         val context = this
 
         button.setOnClickListener {
-            WitnessLocation.witness(context)
+            WitnessLocation().witness(context)
         }
     }
 }
