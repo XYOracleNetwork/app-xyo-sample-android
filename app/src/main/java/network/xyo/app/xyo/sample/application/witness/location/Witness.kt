@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.withContext
@@ -19,7 +18,7 @@ sealed class WitnessResult<out R> {
     data class Error(val exception: MutableList<kotlin.Error>) : WitnessResult<Nothing>()
 }
 
-class WitnessLocation {
+class WitnessLocationHandler {
     @RequiresApi(Build.VERSION_CODES.M)
     suspend fun witness(context: Context): WitnessResult<XyoPayload?> {
         val panel = XyoPanel(context, arrayListOf(Pair(nodeUrl, XyoAccount())), listOf(
