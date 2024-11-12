@@ -1,4 +1,4 @@
-package network.xyo.app.xyo.sample.application
+package network.xyo.app.xyo.sample.application.witness.location
 
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.os.Build
@@ -12,8 +12,7 @@ import com.vmadalin.easypermissions.annotations.AfterPermissionGranted
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import network.xyo.app.xyo.sample.application.witness.location.WitnessLocation
-import network.xyo.app.xyo.sample.application.witness.location.WitnessResult
+import network.xyo.app.xyo.sample.application.R
 import network.xyo.client.payload.XyoPayload
 import network.xyo.client.witness.location.info.LocationActivity
 
@@ -55,9 +54,14 @@ class LocationWitnessActivity : LocationActivity() {
 
         val context = this
 
+        var isRunning = false
         button.setOnClickListener {
+            if (isRunning) return@setOnClickListener
+            isRunning = true
+
+            // Extract Dispatchers.IO to helper
             CoroutineScope(Dispatchers.IO).launch {
-                when (val result = WitnessLocation().witness(context)) {
+                when (val result = WitnessLocationHandler().witness(context)) {
                     is WitnessResult.Success<XyoPayload?> -> {
                         Looper.prepare()
                         Toast.makeText(context, "Location saved to archivist! - ${result.data?.schema}", Toast.LENGTH_SHORT).show()
@@ -67,6 +71,7 @@ class LocationWitnessActivity : LocationActivity() {
                         Toast.makeText(context, "Location was NOT Saved to archivist! - ${result.exception.first().message}", Toast.LENGTH_SHORT).show()
                     }
                 }
+                isRunning = false
             }
         }
     }
