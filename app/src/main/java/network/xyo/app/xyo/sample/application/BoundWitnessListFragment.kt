@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import network.xyo.app.xyo.sample.application.databinding.BoundwitnessListBinding
 import network.xyo.app.xyo.sample.application.databinding.ItemListContentBinding
+import network.xyo.app.xyo.sample.application.witness.location.LocationWitnessActivity
 import network.xyo.client.node.client.QueryResponseWrapper
 
 /**
