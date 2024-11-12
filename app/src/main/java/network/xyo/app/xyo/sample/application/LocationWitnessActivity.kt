@@ -1,18 +1,23 @@
 package network.xyo.app.xyo.sample.application
 
 import android.Manifest.permission.ACCESS_FINE_LOCATION
-import android.Manifest.permission.READ_CONTACTS
 import android.os.Build
 import android.os.Bundle
+import android.os.Looper
 import android.widget.Button
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.annotations.AfterPermissionGranted
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import network.xyo.app.xyo.sample.application.witness.location.WitnessLocation
+import network.xyo.app.xyo.sample.application.witness.location.WitnessResult
+import network.xyo.client.payload.XyoPayload
 import network.xyo.client.witness.location.info.LocationActivity
 
-const val REQUEST_CODE_LOCATION_AND_CONTACTS_PERMISSION = 12345
+const val REQUEST_CODE_LOCATION = 1000
 
 class LocationWitnessActivity : LocationActivity() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
@@ -22,9 +27,9 @@ class LocationWitnessActivity : LocationActivity() {
         EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
     }
 
-    @AfterPermissionGranted(REQUEST_CODE_LOCATION_AND_CONTACTS_PERMISSION)
+    @AfterPermissionGranted(REQUEST_CODE_LOCATION)
     private fun methodRequiresTwoPermission() {
-        if (EasyPermissions.hasPermissions(this, ACCESS_FINE_LOCATION, READ_CONTACTS)) {
+        if (EasyPermissions.hasPermissions(this, ACCESS_FINE_LOCATION)) {
             // Already have permission, do the thing
             // ...
         } else {
@@ -32,13 +37,12 @@ class LocationWitnessActivity : LocationActivity() {
             EasyPermissions.requestPermissions(
                 this,
                 getString(R.string.permission_location_and_contacts_rationale_message),
-                REQUEST_CODE_LOCATION_AND_CONTACTS_PERMISSION,
-                ACCESS_FINE_LOCATION, READ_CONTACTS
+                REQUEST_CODE_LOCATION,
+                ACCESS_FINE_LOCATION
             )
         }
     }
 
-    @ExperimentalCoroutinesApi
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +56,18 @@ class LocationWitnessActivity : LocationActivity() {
         val context = this
 
         button.setOnClickListener {
-            WitnessLocation().witness(context)
+            CoroutineScope(Dispatchers.IO).launch {
+                when (val result = WitnessLocation().witness(context)) {
+                    is WitnessResult.Success<XyoPayload?> -> {
+                        Looper.prepare()
+                        Toast.makeText(context, "Location saved to archivist! - ${result.data?.schema}", Toast.LENGTH_SHORT).show()
+                    }
+                    else -> {
+                        Looper.prepare()
+                        Toast.makeText(context, "Location was NOT Saved to archivist!", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            }
         }
     }
 }
