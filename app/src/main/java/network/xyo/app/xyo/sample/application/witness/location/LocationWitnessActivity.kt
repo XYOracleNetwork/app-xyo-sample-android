@@ -15,6 +15,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import network.xyo.app.xyo.sample.application.Constants
 import network.xyo.app.xyo.sample.application.R
+import network.xyo.app.xyo.sample.application.witness.WitnessResult
 import network.xyo.client.payload.XyoPayload
 import network.xyo.client.witness.location.info.LocationActivity
 

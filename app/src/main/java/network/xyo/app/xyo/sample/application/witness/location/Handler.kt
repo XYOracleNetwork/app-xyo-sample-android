@@ -8,19 +8,16 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.withContext
 import network.xyo.app.xyo.sample.application.nodeUrl
+import network.xyo.app.xyo.sample.application.witness.WitnessHandlerInterface
+import network.xyo.app.xyo.sample.application.witness.WitnessResult
 import network.xyo.client.XyoPanel
 import network.xyo.client.address.XyoAccount
 import network.xyo.client.payload.XyoPayload
 import network.xyo.client.witness.location.info.XyoLocationWitness
 
-sealed class WitnessResult<out R> {
-    data class Success<out T>(val data: T) : WitnessResult<T>()
-    data class Error(val exception: MutableList<kotlin.Error>) : WitnessResult<Nothing>()
-}
-
-class WitnessLocationHandler {
+class WitnessLocationHandler : WitnessHandlerInterface<XyoPayload?> {
     @RequiresApi(Build.VERSION_CODES.M)
-    suspend fun witness(context: Context): WitnessResult<XyoPayload?> {
+    override suspend fun witness(context: Context): WitnessResult<XyoPayload?> {
         val panel = XyoPanel(context, arrayListOf(Pair(nodeUrl, XyoAccount())), listOf(
             XyoLocationWitness()
         ))
@@ -53,5 +50,4 @@ class WitnessLocationHandler {
             return@withContext WitnessResult.Success(locationPayload)
         }
     }
-
 }
