@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.os.Looper
+import android.util.Log
 import android.widget.Button
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -35,7 +36,7 @@ class LocationWitnessActivity : LocationActivity() {
     private fun methodRequiresTwoPermission() {
         if (EasyPermissions.hasPermissions(this, ACCESS_FINE_LOCATION)) {
             // Already have permission, do the thing
-            // ...
+            Log.i("xyoSampleApp", "Permissions already granted")
         } else {
             // Do not have permissions, request them now
             EasyPermissions.requestPermissions(
