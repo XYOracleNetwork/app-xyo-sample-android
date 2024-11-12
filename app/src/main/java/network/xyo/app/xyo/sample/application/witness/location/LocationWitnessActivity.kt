@@ -15,7 +15,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import network.xyo.app.xyo.sample.application.Constants
 import network.xyo.app.xyo.sample.application.R
+import network.xyo.app.xyo.sample.application.nodeUrl
 import network.xyo.app.xyo.sample.application.witness.WitnessResult
+import network.xyo.client.address.XyoAccount
 import network.xyo.client.payload.XyoPayload
 import network.xyo.client.witness.location.info.LocationActivity
 
@@ -69,10 +71,16 @@ class LocationWitnessActivity : LocationActivity() {
     @RequiresApi(Build.VERSION_CODES.M)
     private fun handleLocationWitness(context: Context, dispatcher: CoroutineDispatcher) {
         CoroutineScope(dispatcher).launch {
-            when (val result = WitnessLocationHandler().witness(context)) {
-                is WitnessResult.Success<XyoPayload?> -> {
+            when (val result = WitnessLocationHandler().witness(context, arrayListOf(Pair(nodeUrl, XyoAccount())))) {
+                is WitnessResult.Success<List<XyoPayload?>> -> {
                     Looper.prepare()
-                    Toast.makeText(context, "Location saved to archivist! - ${result.data?.schema}", Toast.LENGTH_SHORT).show()
+                    result.data.forEach() { it ->
+                        Toast.makeText(
+                            context,
+                            "Location saved to archivist! - ${it?.schema}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
                 is WitnessResult.Error -> {
                     Looper.prepare()

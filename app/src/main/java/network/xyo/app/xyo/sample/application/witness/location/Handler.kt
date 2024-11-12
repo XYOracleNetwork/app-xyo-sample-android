@@ -7,7 +7,6 @@ import androidx.annotation.RequiresApi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.withContext
-import network.xyo.app.xyo.sample.application.nodeUrl
 import network.xyo.app.xyo.sample.application.witness.WitnessHandlerInterface
 import network.xyo.app.xyo.sample.application.witness.WitnessResult
 import network.xyo.client.XyoPanel
@@ -15,10 +14,10 @@ import network.xyo.client.address.XyoAccount
 import network.xyo.client.payload.XyoPayload
 import network.xyo.client.witness.location.info.XyoLocationWitness
 
-class WitnessLocationHandler : WitnessHandlerInterface<XyoPayload?> {
+class WitnessLocationHandler : WitnessHandlerInterface<List<XyoPayload?>> {
     @RequiresApi(Build.VERSION_CODES.M)
-    override suspend fun witness(context: Context): WitnessResult<XyoPayload?> {
-        val panel = XyoPanel(context, arrayListOf(Pair(nodeUrl, XyoAccount())), listOf(
+    override suspend fun witness(context: Context, nodeUrlsAndAccounts: ArrayList<Pair<String, XyoAccount?>>): WitnessResult<List<XyoPayload?>> {
+        val panel = XyoPanel(context, nodeUrlsAndAccounts, listOf(
             XyoLocationWitness()
         ))
         return getLocation(panel)
@@ -26,14 +25,18 @@ class WitnessLocationHandler : WitnessHandlerInterface<XyoPayload?> {
 
     @OptIn(ExperimentalCoroutinesApi::class)
     @RequiresApi(Build.VERSION_CODES.M)
-    private suspend fun getLocation(panel: XyoPanel): WitnessResult<XyoPayload?> {
+    private suspend fun getLocation(panel: XyoPanel): WitnessResult<List<XyoPayload?>> {
         return withContext(Dispatchers.IO) {
             var locationPayload: XyoPayload? = null
+            var bw: XyoPayload? = null
             val errors: MutableList<Error> = mutableListOf()
             panel.let {
                 it.reportAsyncQuery().apiResults?.forEach { action ->
                     if (action.response !== null) {
                         val payloads = action.response!!.payloads
+                        if (payloads?.get(0)?.schema.equals("network.xyo.boundwitness")) {
+                            bw = payloads?.get(0)
+                        }
                         if (payloads?.get(1)?.schema.equals("network.xyo.location.android")) {
                             locationPayload = payloads?.get(1)
                         }
@@ -47,7 +50,7 @@ class WitnessLocationHandler : WitnessHandlerInterface<XyoPayload?> {
                 }
             }
             if (errors.size > 0) return@withContext WitnessResult.Error(errors)
-            return@withContext WitnessResult.Success(locationPayload)
+            return@withContext WitnessResult.Success(listOf(bw, locationPayload))
         }
     }
 }
