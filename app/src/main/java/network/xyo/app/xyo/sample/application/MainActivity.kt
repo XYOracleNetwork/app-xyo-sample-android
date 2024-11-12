@@ -27,24 +27,11 @@ class MainActivity : AppCompatActivity() {
         val navController = navHostFragment.navController
         appBarConfiguration = AppBarConfiguration(navController.graph)
         setupActionBarWithNavController(navController, appBarConfiguration)
-
-//        setupLocationWitnessButton()
     }
 
     override fun onSupportNavigateUp(): Boolean {
         val navController = findNavController(R.id.nav_host_fragment_item_detail)
         return navController.navigateUp(appBarConfiguration)
                 || super.onSupportNavigateUp()
-    }
-
-    private fun setupLocationWitnessButton() {
-        // TODO - figure out how to find the button
-        val binding = BoundwitnessListBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        binding.witnessLocationButton?.setOnClickListener {
-            val intent = Intent(this, LocationWitnessActivity::class.java)
-            startActivity(intent)
-        }
     }
 }
