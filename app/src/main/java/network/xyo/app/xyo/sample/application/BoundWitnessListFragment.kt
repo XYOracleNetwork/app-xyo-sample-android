@@ -1,5 +1,6 @@
 package network.xyo.app.xyo.sample.application
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.view.KeyEvent
@@ -78,6 +79,11 @@ class BoundWitnessListFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         ViewCompat.addOnUnhandledKeyEventListener(view, unhandledKeyEventListenerCompat)
+
+        binding.witnessLocationButton?.setOnClickListener {
+            val intent = Intent(activity, LocationWitnessActivity::class.java)
+            startActivity(intent)
+        }
 
         val recyclerView: RecyclerView = binding.itemList
 
