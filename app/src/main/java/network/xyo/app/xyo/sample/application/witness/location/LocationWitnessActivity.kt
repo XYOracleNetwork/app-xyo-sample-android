@@ -1,6 +1,7 @@
 package network.xyo.app.xyo.sample.application.witness.location
 
 import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.os.Looper
@@ -9,9 +10,10 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.annotations.AfterPermissionGranted
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import network.xyo.app.xyo.sample.application.Constants
 import network.xyo.app.xyo.sample.application.R
 import network.xyo.client.payload.XyoPayload
 import network.xyo.client.witness.location.info.LocationActivity
@@ -58,20 +60,23 @@ class LocationWitnessActivity : LocationActivity() {
         button.setOnClickListener {
             if (isRunning) return@setOnClickListener
             isRunning = true
+            handleLocationWitness(context, Constants.witnessDispatcher)
+            isRunning = false
+        }
+    }
 
-            // Extract Dispatchers.IO to helper
-            CoroutineScope(Dispatchers.IO).launch {
-                when (val result = WitnessLocationHandler().witness(context)) {
-                    is WitnessResult.Success<XyoPayload?> -> {
-                        Looper.prepare()
-                        Toast.makeText(context, "Location saved to archivist! - ${result.data?.schema}", Toast.LENGTH_SHORT).show()
-                    }
-                    is WitnessResult.Error -> {
-                        Looper.prepare()
-                        Toast.makeText(context, "Location was NOT Saved to archivist! - ${result.exception.first().message}", Toast.LENGTH_SHORT).show()
-                    }
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun handleLocationWitness(context: Context, dispatcher: CoroutineDispatcher) {
+        CoroutineScope(dispatcher).launch {
+            when (val result = WitnessLocationHandler().witness(context)) {
+                is WitnessResult.Success<XyoPayload?> -> {
+                    Looper.prepare()
+                    Toast.makeText(context, "Location saved to archivist! - ${result.data?.schema}", Toast.LENGTH_SHORT).show()
                 }
-                isRunning = false
+                is WitnessResult.Error -> {
+                    Looper.prepare()
+                    Toast.makeText(context, "Location was NOT Saved to archivist! - ${result.exception.first().message}", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }
