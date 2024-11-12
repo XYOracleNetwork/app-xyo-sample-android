@@ -22,7 +22,8 @@ class XyoPanelWrapper {
             val panel: XyoPanel?
             val account = XyoAccount()
 
-            panel = XyoPanel(context, arrayListOf(Pair(nodeUrl, account)), listOf(XyoSystemInfoWitness(), XyoLocationWitness()))
+            panel = XyoPanel(context, arrayListOf(Pair(nodeUrl, account)), listOf(XyoSystemInfoWitness()))
+
             panel.let {
                 runBlocking {
                     it.reportAsyncQuery().apiResults?.forEach{ action ->
