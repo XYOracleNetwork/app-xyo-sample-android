@@ -5,11 +5,9 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.runBlocking
 import network.xyo.client.XyoPanel
-import network.xyo.client.address.XyoAccount
 import network.xyo.client.node.client.QueryResponseWrapper
-import network.xyo.client.witness.location.info.XyoLocationWitness
+import network.xyo.client.settings.XyoSdk
 import network.xyo.client.witness.system.info.XyoSystemInfoWitness
 
 const val nodeUrl = "https://beta.api.archivist.xyo.network/Archivist"
@@ -18,27 +16,25 @@ class XyoPanelWrapper {
     @ExperimentalCoroutinesApi
     @RequiresApi(Build.VERSION_CODES.M)
     companion object {
-        fun onAppLoad(context: Context) {
+        val boundWitnesses = mutableListOf<QueryResponseWrapper>()
+        suspend fun onAppLoad(context: Context) {
             val panel: XyoPanel?
-            val account = XyoAccount()
+            val account = XyoSdk.getInstance(context).settings.getAccount(context)
 
             panel = XyoPanel(context, arrayListOf(Pair(nodeUrl, account)), listOf(XyoSystemInfoWitness()))
 
             panel.let {
-                runBlocking {
-                    it.reportAsyncQuery().apiResults?.forEach{ action ->
-                        if (action.response !== null) {
-                            boundWitnesses.add(action.response!!)
-                        }
-                        if (action.errors !== null) {
-                            action.errors!!.forEach {
-                                Log.e("xyoSampleApp", it.message ?: it.toString())
-                            }
+                it.reportAsyncQuery().apiResults?.forEach{ action ->
+                    if (action.response !== null) {
+                        boundWitnesses.add(action.response!!)
+                    }
+                    if (action.errors !== null) {
+                        action.errors!!.forEach { ex ->
+                            Log.e("xyoSampleApp", ex.toString() + ex.stackTraceToString())
                         }
                     }
                 }
             }
         }
-        val boundWitnesses = mutableListOf<QueryResponseWrapper>()
     }
 }
