@@ -21,6 +21,7 @@ import network.xyo.app.xyo.sample.application.witness.WitnessResult
 import network.xyo.client.address.XyoAccount
 import network.xyo.client.payload.XyoPayload
 import network.xyo.client.witness.location.info.LocationActivity
+import network.xyo.client.witness.location.info.WitnessLocationHandler
 
 const val REQUEST_CODE_LOCATION = 1000
 
