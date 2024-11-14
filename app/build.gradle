@@ -3,6 +3,10 @@ plugins {
     id 'kotlin-android'
 }
 
+ext {
+    compose_ui_version = '1.7.5'
+}
+
 android {
     compileSdk 35
 
@@ -33,8 +37,14 @@ android {
     }
 
     buildFeatures {
+        compose true
         viewBinding true
     }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.14"
+    }
+
     namespace 'network.xyo.app.xyo.sample.application'
 }
 
@@ -61,6 +71,17 @@ dependencies {
     implementation 'com.squareup.moshi:moshi-kotlin:1.15.1'
     implementation 'com.github.pvarry:android-json-viewer:v1.1'
     implementation 'com.vmadalin:easypermissions-ktx:1.0.0'
+    // Jetpack Compose dependencies
+    implementation "androidx.compose.ui:ui:$compose_ui_version"
+    implementation "androidx.compose.material:material:$compose_ui_version"
+    implementation "androidx.compose.ui:ui-tooling-preview:$compose_ui_version"
+    implementation "androidx.activity:activity-compose:1.9.3" // required to use Compose in Activity
+    implementation "androidx.compose.runtime:runtime-livedata:$compose_ui_version"
+
+    // Optional dependencies for Compose
+    debugImplementation "androidx.compose.ui:ui-tooling:$compose_ui_version" // for Compose preview in Android Studio
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.8.7" // required for lifecycle management
+
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
