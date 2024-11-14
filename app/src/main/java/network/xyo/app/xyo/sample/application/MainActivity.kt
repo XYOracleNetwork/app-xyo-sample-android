@@ -1,8 +1,6 @@
 package network.xyo.app.xyo.sample.application
 
-import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
@@ -10,7 +8,9 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import network.xyo.app.xyo.sample.application.databinding.ActivityItemDetailBinding
-import network.xyo.app.xyo.sample.application.databinding.BoundwitnessListBinding
+import network.xyo.client.settings.AccountPreferences
+import network.xyo.client.settings.DefaultXyoSdkSettings
+import network.xyo.client.settings.XyoSdk
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,6 +18,17 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        class UpdatedAccountPreferences : AccountPreferences {
+            override val fileName = "network-xyo-account-prefs"
+            override val storagePath = "xyo-accounts"
+        }
+
+        class SampleAppSettings : DefaultXyoSdkSettings() {
+            override val accountPreferences = UpdatedAccountPreferences()
+        }
+
+        XyoSdk.refresh(this, SampleAppSettings())
 
         val binding = ActivityItemDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
