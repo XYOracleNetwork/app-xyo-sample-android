@@ -3,6 +3,7 @@ package network.xyo.app.xyo.sample.application
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -12,9 +13,11 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 import network.xyo.app.xyo.sample.application.databinding.BoundwitnessListBinding
 import network.xyo.app.xyo.sample.application.databinding.ItemListContentBinding
 import network.xyo.app.xyo.sample.application.witness.location.LocationWitnessActivity
@@ -125,12 +128,8 @@ class BoundWitnessListFragment : Fragment() {
             true
         }
         setupRecyclerView(recyclerView, onClickListener, onContextClickListener)
-        context?.let {
-            XyoPanelWrapper.onAppLoad(it)
-        }
-        this@BoundWitnessListFragment.activity?.runOnUiThread {
-            recyclerView.adapter?.notifyDataSetChanged()
-        }
+
+        callPanel(recyclerView)
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -145,6 +144,24 @@ class BoundWitnessListFragment : Fragment() {
             onClickListener,
             onContextClickListener
         )
+    }
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun callPanel(recyclerView: RecyclerView) {
+        context?.let { outerContext ->
+            viewLifecycleOwner.lifecycleScope.launch {
+                try {
+                    XyoPanelWrapper.onAppLoad(outerContext)
+                    this@BoundWitnessListFragment.activity?.runOnUiThread {
+                        recyclerView.adapter?.notifyDataSetChanged()
+                    }
+                } catch (e: Exception) {
+                    val message = "Error Calling Panel: ${e.message}"
+                    Log.e("sampleApp", e.toString() + e.stackTraceToString())
+                    Toast.makeText(outerContext, message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
     class SimpleItemRecyclerViewAdapter(
