@@ -72,16 +72,21 @@ class LocationWitnessActivity : LocationActivity() {
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun handleLocationWitness(context: Context, dispatcher: CoroutineDispatcher) {
+        val hashes = arrayListOf<String>()
         CoroutineScope(dispatcher).launch {
             when (val result = WitnessLocationHandler().witness(context, arrayListOf(Pair(nodeUrl, XyoAccount())))) {
                 is WitnessResult.Success<List<XyoPayload?>> -> {
                     Looper.prepare()
                     result.data.forEach() { it ->
-                        Toast.makeText(
-                            context,
-                            "Payload saved to archivist! - ${it?.schema}",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        val hash = it?.hash()
+                        if (hash !== null) {
+                            hashes.add(hash)
+                            Toast.makeText(
+                                context,
+                                "Payload saved to archivist! - $hash",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
                 }
                 is WitnessResult.Error -> {
