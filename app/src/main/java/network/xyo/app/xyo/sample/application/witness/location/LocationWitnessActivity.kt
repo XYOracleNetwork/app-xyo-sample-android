@@ -6,8 +6,8 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Looper
 import android.util.Log
-import android.widget.Button
 import android.widget.Toast
+import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.annotations.AfterPermissionGranted
@@ -20,12 +20,13 @@ import network.xyo.app.xyo.sample.application.nodeUrl
 import network.xyo.app.xyo.sample.application.witness.WitnessResult
 import network.xyo.client.address.XyoAccount
 import network.xyo.client.payload.XyoPayload
-import network.xyo.client.witness.location.info.LocationActivity
 import network.xyo.client.witness.location.info.WitnessLocationHandler
 
 const val REQUEST_CODE_LOCATION = 1000
 
 class LocationWitnessActivity : LocationActivity() {
+    val hashes = HashesViewModel()
+
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
@@ -55,24 +56,14 @@ class LocationWitnessActivity : LocationActivity() {
 
         methodRequiresTwoPermission()
 
-        setContentView(R.layout.location_witness_activity)
-
-        val button: Button = findViewById(R.id.witness_button)
-
-        val context = this
-
-        var isRunning = false
-        button.setOnClickListener {
-            if (isRunning) return@setOnClickListener
-            isRunning = true
-            handleLocationWitness(context, Constants.witnessDispatcher)
-            isRunning = false
+        setContent {
+            WitnessLocationButton(witnessLocation = { handleLocationWitness(this, Constants.witnessDispatcher) })
+            HashList(hashes)
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
     private fun handleLocationWitness(context: Context, dispatcher: CoroutineDispatcher) {
-        val hashes = arrayListOf<String>()
         CoroutineScope(dispatcher).launch {
             when (val result = WitnessLocationHandler().witness(context, arrayListOf(Pair(nodeUrl, XyoAccount())))) {
                 is WitnessResult.Success<List<XyoPayload?>> -> {
@@ -80,7 +71,7 @@ class LocationWitnessActivity : LocationActivity() {
                     result.data.forEach() { it ->
                         val hash = it?.hash()
                         if (hash !== null) {
-                            hashes.add(hash)
+                            hashes.addHash(hash)
                             Toast.makeText(
                                 context,
                                 "Payload saved to archivist! - $hash",
