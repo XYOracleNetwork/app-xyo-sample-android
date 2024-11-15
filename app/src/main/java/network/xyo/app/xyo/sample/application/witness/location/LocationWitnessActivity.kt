@@ -4,7 +4,6 @@ import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.setContent
@@ -13,14 +12,15 @@ import com.vmadalin.easypermissions.EasyPermissions
 import com.vmadalin.easypermissions.annotations.AfterPermissionGranted
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import network.xyo.app.xyo.sample.application.Constants
 import network.xyo.app.xyo.sample.application.R
 import network.xyo.app.xyo.sample.application.nodeUrl
-import network.xyo.app.xyo.sample.application.witness.WitnessResult
-import network.xyo.client.address.XyoAccount
+import network.xyo.client.datastore.AccountPrefsRepository
 import network.xyo.client.payload.XyoPayload
 import network.xyo.client.witness.location.info.WitnessLocationHandler
+import network.xyo.client.witness.types.WitnessResult
 
 const val REQUEST_CODE_LOCATION = 1000
 
@@ -65,24 +65,27 @@ class LocationWitnessActivity : LocationActivity() {
     @RequiresApi(Build.VERSION_CODES.M)
     private fun handleLocationWitness(context: Context, dispatcher: CoroutineDispatcher) {
         CoroutineScope(dispatcher).launch {
-            when (val result = WitnessLocationHandler().witness(context, arrayListOf(Pair(nodeUrl, XyoAccount())))) {
+            val account = AccountPrefsRepository.getInstance(context).getAccount()
+            when (val result = WitnessLocationHandler().witness(context, arrayListOf(Pair(nodeUrl, account)))) {
                 is WitnessResult.Success<List<XyoPayload?>> -> {
-                    Looper.prepare()
                     result.data.forEach() { it ->
-                        val hash = it?.hash()
-                        if (hash !== null) {
+                        if (it !== null) {
+                            val hash = it.hash()
                             hashes.addHash(hash)
-                            Toast.makeText(
-                                context,
-                                "Payload saved to archivist! - $hash",
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            CoroutineScope(Dispatchers.Main).launch {
+                                Toast.makeText(
+                                    context,
+                                    "Witnessed payload - $hash",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
                         }
                     }
                 }
                 is WitnessResult.Error -> {
-                    Looper.prepare()
-                    Toast.makeText(context, "Payload was NOT Saved to archivist! - ${result.exception.first().message}", Toast.LENGTH_SHORT).show()
+                    CoroutineScope(Dispatchers.Main).launch {
+                        Toast.makeText(context, "Failed to witness payload - ${result.exception.first().message}", Toast.LENGTH_SHORT).show()
+                    }
                 }
             }
         }
