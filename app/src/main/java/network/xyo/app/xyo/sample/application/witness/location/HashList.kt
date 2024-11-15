@@ -40,7 +40,7 @@ fun HashList(hashesViewModel: HashesViewModel) {
 @Composable
 fun HashItem(hash: String) {
     Box(
-        Modifier.border(2.dp, Color.Gray)
+        Modifier.border(1.dp, Color.Gray)
     ) {
         Text(text = hash, modifier = Modifier.padding(10.dp))
     }
