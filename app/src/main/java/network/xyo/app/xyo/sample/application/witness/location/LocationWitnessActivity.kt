@@ -1,53 +1,67 @@
 package network.xyo.app.xyo.sample.application.witness.location
 
+import android.Manifest
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import com.vmadalin.easypermissions.EasyPermissions
-import com.vmadalin.easypermissions.annotations.AfterPermissionGranted
+import androidx.core.content.ContextCompat
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import network.xyo.app.xyo.sample.application.Constants
-import network.xyo.app.xyo.sample.application.R
 import network.xyo.app.xyo.sample.application.nodeUrl
 import network.xyo.client.datastore.AccountPrefsRepository
 import network.xyo.client.payload.XyoPayload
 import network.xyo.client.witness.location.info.WitnessLocationHandler
 import network.xyo.client.witness.types.WitnessResult
 
-const val REQUEST_CODE_LOCATION = 1000
-
 class LocationWitnessActivity : LocationActivity() {
     val hashes = HashesViewModel()
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        // EasyPermissions handles the request result.
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults, this)
+    private val requestMultiplePermissionsLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        // Step 2: Handle the results for each permission
+        permissions.entries.forEach { entry ->
+            val permission = entry.key
+            val isGranted = entry.value
+            if (isGranted) {
+                Toast.makeText(this, "$permission granted", Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(this, "$permission denied", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
-    @AfterPermissionGranted(REQUEST_CODE_LOCATION)
     private fun methodRequiresTwoPermission() {
-        if (EasyPermissions.hasPermissions(this, ACCESS_FINE_LOCATION)) {
-            // Already have permission, do the thing
+        val permissions = arrayOf(
+            ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION
+        )
+
+        val grantedPermissions = permissions.all { permission ->
+            ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
+        }
+
+        if (grantedPermissions) {
             Log.i("xyoSampleApp", "Permissions already granted")
         } else {
-            // Do not have permissions, request them now
-            EasyPermissions.requestPermissions(
-                this,
-                getString(R.string.permission_location_and_contacts_rationale_message),
-                REQUEST_CODE_LOCATION,
-                ACCESS_FINE_LOCATION
+            requestMultiplePermissionsLauncher.launch(
+                arrayOf(
+                    ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                )
             )
         }
+
     }
 
     @RequiresApi(Build.VERSION_CODES.M)

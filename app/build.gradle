@@ -52,9 +52,9 @@ dependencies {
 //    Uncomment to have dependencies that end in '-SNAPSHOT' update more frequently during local development
 //    See: https://docs.gradle.org/current/userguide/dependency_management.html#sec:controlling_dependency_caching_programmatically
 //
-    configurations.configureEach {
-        resolutionStrategy.cacheChangingModulesFor 1, 'minutes'
-    }
+//    configurations.configureEach {
+//        resolutionStrategy.cacheChangingModulesFor 1, 'minutes'
+//    }
 
     implementation "org.jetbrains.kotlin:kotlin-reflect:2.0.21"
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0'
@@ -70,7 +70,6 @@ dependencies {
     implementation 'com.github.xyoraclenetwork:sdk-xyo-client-android:main-SNAPSHOT'
     implementation 'com.squareup.moshi:moshi-kotlin:1.15.1'
     implementation 'com.github.pvarry:android-json-viewer:v1.1'
-    implementation 'com.vmadalin:easypermissions-ktx:1.0.0'
     // Jetpack Compose dependencies
     implementation "androidx.compose.ui:ui:$compose_ui_version"
     implementation "androidx.compose.material:material:$compose_ui_version"
