@@ -19,7 +19,7 @@ class XyoPanelWrapper {
         val boundWitnesses = mutableListOf<QueryResponseWrapper>()
         suspend fun onAppLoad(context: Context) {
             val panel: XyoPanel?
-            val account = XyoSdk.getInstance(context).settings.getAccount(context)
+            val account = XyoSdk.getInstance(context).getAccount()
 
             panel = XyoPanel(context, arrayListOf(Pair(nodeUrl, account)), listOf(XyoSystemInfoWitness()))
 
