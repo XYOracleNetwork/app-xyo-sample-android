@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
             override val accountPreferences = UpdatedAccountPreferences()
         }
 
-        XyoSdk.refresh(this, SampleAppSettings())
+        XyoSdk.refresh(this.application, SampleAppSettings())
 
         val binding = ActivityItemDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
