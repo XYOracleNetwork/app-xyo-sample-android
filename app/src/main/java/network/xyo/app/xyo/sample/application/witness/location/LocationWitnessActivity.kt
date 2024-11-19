@@ -18,7 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import network.xyo.app.xyo.sample.application.Constants
 import network.xyo.app.xyo.sample.application.nodeUrl
-import network.xyo.client.datastore.AccountPrefsRepository
+import network.xyo.client.datastore.accounts.AccountPrefsRepository
 import network.xyo.client.payload.XyoPayload
 import network.xyo.client.witness.location.info.WitnessLocationHandler
 import network.xyo.client.witness.types.WitnessResult
