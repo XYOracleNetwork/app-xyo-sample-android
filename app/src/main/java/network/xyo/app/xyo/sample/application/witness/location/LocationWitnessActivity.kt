@@ -18,13 +18,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import network.xyo.app.xyo.sample.application.Constants
 import network.xyo.app.xyo.sample.application.nodeUrl
-import network.xyo.client.datastore.accounts.AccountPrefsRepository
+import network.xyo.client.boundwitness.XyoBoundWitnessBodyJson
+
 import network.xyo.client.payload.XyoPayload
 import network.xyo.client.witness.location.info.WitnessLocationHandler
 import network.xyo.client.witness.types.WitnessResult
 
 class LocationWitnessActivity : LocationActivity() {
-    val hashes = HashesViewModel()
+    private val hashes = HashesViewModel()
 
     private val requestMultiplePermissionsLauncher = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()
@@ -79,27 +80,32 @@ class LocationWitnessActivity : LocationActivity() {
     @RequiresApi(Build.VERSION_CODES.M)
     private fun handleLocationWitness(context: Context, dispatcher: CoroutineDispatcher) {
         CoroutineScope(dispatcher).launch {
-            val account = AccountPrefsRepository.getInstance(context).getAccount()
-            when (val result = WitnessLocationHandler().witness(context, arrayListOf(Pair(nodeUrl, account)))) {
-                is WitnessResult.Success<List<XyoPayload?>> -> {
-                    result.data.forEach() { it ->
-                        if (it !== null) {
-                            val hash = it.hash()
-                            hashes.addHash(hash)
-                            CoroutineScope(Dispatchers.Main).launch {
-                                Toast.makeText(
-                                    context,
-                                    "Witnessed payload - $hash",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                        }
-                    }
+            when (val result = WitnessLocationHandler().witness(context, arrayListOf(Pair(nodeUrl, null)))) {
+                is WitnessResult.Success<Pair<XyoBoundWitnessBodyJson?, XyoPayload?>> -> {
+                    val bw = result.data.first
+                    val locationPayload = result.data.second
+                    handleResults(listOf(bw, locationPayload), context)
                 }
                 is WitnessResult.Error -> {
                     CoroutineScope(Dispatchers.Main).launch {
                         Toast.makeText(context, "Failed to witness payload - ${result.exception.first().message}", Toast.LENGTH_SHORT).show()
                     }
+                }
+            }
+        }
+    }
+
+    private fun handleResults(result: List<XyoPayload?>, context: Context) {
+        result.forEach {
+            if (it !== null) {
+                val hash = it.hash()
+                hashes.addHash(hash)
+                CoroutineScope(Dispatchers.Main).launch {
+                    Toast.makeText(
+                        context.applicationContext,
+                        "Witnessed payload - $hash",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
         }
