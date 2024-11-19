@@ -21,7 +21,7 @@ class XyoPanelWrapper {
             val panel: XyoPanel?
             val account = XyoSdk.getInstance(context).getAccount()
 
-            panel = XyoPanel(context, arrayListOf(Pair(nodeUrl, account)), listOf(XyoSystemInfoWitness()))
+            panel = XyoPanel(context, account, arrayListOf(Pair(nodeUrl, null)), listOf(XyoSystemInfoWitness()))
 
             panel.let {
                 it.reportAsyncQuery().apiResults?.forEach{ action ->
