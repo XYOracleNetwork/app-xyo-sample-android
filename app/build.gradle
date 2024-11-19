@@ -67,7 +67,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7'
     implementation 'androidx.navigation:navigation-fragment-ktx:2.8.4'
     implementation 'androidx.navigation:navigation-ui-ktx:2.8.4'
-    implementation 'com.github.xyoraclenetwork:sdk-xyo-client-android:main-SNAPSHOT'
+    implementation 'com.github.xyoraclenetwork:sdk-xyo-client-android:main'
     implementation 'com.squareup.moshi:moshi-kotlin:1.15.1'
     implementation 'com.github.pvarry:android-json-viewer:v1.1'
     // Jetpack Compose dependencies
