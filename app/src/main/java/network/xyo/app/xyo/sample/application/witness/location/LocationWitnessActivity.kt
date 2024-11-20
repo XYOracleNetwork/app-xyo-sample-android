@@ -82,9 +82,7 @@ class LocationWitnessActivity : LocationActivity() {
         CoroutineScope(dispatcher).launch {
             when (val result = WitnessLocationHandler().witness(context, arrayListOf(Pair(nodeUrl, null)))) {
                 is WitnessResult.Success<Triple<XyoBoundWitnessBodyJson?, XyoPayload?, XyoPayload?>> -> {
-                    val bw = result.data.first
-                    val locationPayload = result.data.second
-                    handleResults(listOf(bw, locationPayload), context)
+                    handleResults(listOf(result.data.first, result.data.second, result.data.third), context)
                 }
                 is WitnessResult.Error -> {
                     CoroutineScope(Dispatchers.Main).launch {
