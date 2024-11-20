@@ -5,7 +5,7 @@ import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import network.xyo.client.XyoPanel
+import network.xyo.client.witness.XyoPanel
 import network.xyo.client.node.client.QueryResponseWrapper
 import network.xyo.client.settings.XyoSdk
 import network.xyo.client.witness.system.info.XyoSystemInfoWitness
