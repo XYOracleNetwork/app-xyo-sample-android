@@ -96,7 +96,7 @@ class LocationWitnessActivity : LocationActivity() {
     private fun handleResults(result: List<XyoPayload?>, context: Context) {
         result.forEach {
             if (it !== null) {
-                val hash = it.hash()
+                val hash = it.dataHash()
                 hashes.addHash(hash)
                 CoroutineScope(Dispatchers.Main).launch {
                     Toast.makeText(
