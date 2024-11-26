@@ -1,23 +1,27 @@
 package network.xyo.app.xyo.sample.application
 
+import android.os.Build
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import com.paulvarry.jsonviewer.JsonViewer
 import network.xyo.app.xyo.sample.application.databinding.BoundwitnessDetailBinding
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import network.xyo.client.boundwitness.XyoBoundWitnessJson
+import network.xyo.client.node.client.QueryResponseWrapper
+import org.json.JSONArray
 import org.json.JSONObject
 import org.json.JSONTokener
 
 
 /**
  * A fragment representing a single Item detail screen.
- * This fragment is either contained in a [ItemListFragment]
+ * This fragment is either contained in a ItemListFragment
  * in two-pane mode (on larger screen devices) or self-contained
  * on handsets.
  */
@@ -27,7 +31,7 @@ class ItemDetailFragment : Fragment() {
     /**
      * The placeholder content this fragment is presenting.
      */
-    private var item: XyoBoundWitnessJson? = null
+    private var item: QueryResponseWrapper? = null
 
     private var jsonViewer: JsonViewer? = null
 
@@ -37,13 +41,14 @@ class ItemDetailFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         arguments?.let {
             if (it.containsKey(ARG_ITEM_HASH)) {
                 val hash = it.getString(ARG_ITEM_HASH)
-                item = XyoPanelWrapper.boundWitnesses.find { item -> item._hash == hash}
+                item = XyoPanelWrapper.boundWitnesses.find { item -> item.bwHash == hash }
             }
         }
     }
@@ -51,12 +56,12 @@ class ItemDetailFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         _binding = BoundwitnessDetailBinding.inflate(inflater, container, false)
         val rootView = binding.root
 
-        binding.toolbarLayout?.title = item?._hash?.substring(0, 5)
+        binding.toolbarLayout?.title = item?.bwHash?.substring(0, 10)
 
         jsonViewer = binding.jsonViewer
         // Show the placeholder content as text in a TextView.

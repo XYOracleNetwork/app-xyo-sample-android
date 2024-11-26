@@ -2,4 +2,8 @@
     <string name="app_name">XYO Sample Application</string>
     <string name="title_item_detail">Item Detail</string>
     <string name="boundwitness_list_name">BoundWitnesses</string>
+    <string name="permission_location_and_contacts_rationale_message">Requesting Location and Contacts for cool stuff</string>
+    <string name="witness_location">Witness Location</string>
+    <string name="witness">Witness</string>
+    <integer name="REQUEST_CODE_LOCATION_AND_CONTACTS_PERMISSION">12345</integer>
 </resources>

@@ -1,21 +1,27 @@
 package network.xyo.app.xyo.sample.application
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 import network.xyo.app.xyo.sample.application.databinding.BoundwitnessListBinding
 import network.xyo.app.xyo.sample.application.databinding.ItemListContentBinding
-import network.xyo.client.boundwitness.XyoBoundWitnessJson
+import network.xyo.app.xyo.sample.application.witness.location.LocationWitnessActivity
+import network.xyo.client.node.client.QueryResponseWrapper
 
 /**
  * A Fragment representing a list of Pings. This fragment
@@ -65,17 +71,23 @@ class BoundWitnessListFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         _binding = BoundwitnessListBinding.inflate(inflater, container, false)
         return binding.root
 
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         ViewCompat.addOnUnhandledKeyEventListener(view, unhandledKeyEventListenerCompat)
+
+        binding.witnessLocationButton?.setOnClickListener {
+            val intent = Intent(activity, LocationWitnessActivity::class.java)
+            startActivity(intent)
+        }
 
         val recyclerView: RecyclerView = binding.itemList
 
@@ -87,11 +99,11 @@ class BoundWitnessListFragment : Fragment() {
          * a single pane layout or two pane layout
          */
         val onClickListener = View.OnClickListener { itemView ->
-            val item = itemView.tag as XyoBoundWitnessJson
+            val item = itemView.tag as QueryResponseWrapper
             val bundle = Bundle()
             bundle.putString(
                 ItemDetailFragment.ARG_ITEM_HASH,
-                item._hash
+                item.bwHash
             )
             if (itemDetailFragmentContainer != null) {
                 itemDetailFragmentContainer.findNavController()
@@ -107,23 +119,20 @@ class BoundWitnessListFragment : Fragment() {
          * experience on larger screen devices
          */
         val onContextClickListener = View.OnContextClickListener { v ->
-            val item = v.tag as XyoBoundWitnessJson
+            val item = v.tag as QueryResponseWrapper
             Toast.makeText(
                 v.context,
-                "Context click of item " + item._hash,
+                "Context click of item " + item.bwHash,
                 Toast.LENGTH_LONG
             ).show()
             true
         }
         setupRecyclerView(recyclerView, onClickListener, onContextClickListener)
-        context?.let {
-            XyoPanelWrapper.onAppLoad(it)
-        }
-        this@BoundWitnessListFragment.activity?.runOnUiThread {
-            recyclerView.adapter?.notifyDataSetChanged()
-        }
+
+        callPanel(recyclerView)
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     private fun setupRecyclerView(
         recyclerView: RecyclerView,
         onClickListener: View.OnClickListener,
@@ -137,8 +146,26 @@ class BoundWitnessListFragment : Fragment() {
         )
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun callPanel(recyclerView: RecyclerView) {
+        context?.let { outerContext ->
+            viewLifecycleOwner.lifecycleScope.launch {
+                try {
+                    XyoPanelWrapper.onAppLoad(outerContext)
+                    this@BoundWitnessListFragment.activity?.runOnUiThread {
+                        recyclerView.adapter?.notifyDataSetChanged()
+                    }
+                } catch (e: Exception) {
+                    val message = "Error Calling Panel: ${e.message}"
+                    Log.e("sampleApp", e.toString() + e.stackTraceToString())
+                    Toast.makeText(outerContext, message, Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
     class SimpleItemRecyclerViewAdapter(
-        private val values: List<XyoBoundWitnessJson>,
+        private val values: MutableList<QueryResponseWrapper>,
         private val onClickListener: View.OnClickListener,
         private val onContextClickListener: View.OnContextClickListener
     ) :
@@ -154,8 +181,8 @@ class BoundWitnessListFragment : Fragment() {
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val item = values[position]
-            holder.idView.text = item._hash?.substring(0, 5)
-            holder.contentView.text = item._hash?.substring(0, 7)
+            holder.idView.text = item.bwHash?.substring(0, 5)
+            holder.contentView.text = item.bwHash?.substring(0, 5)
 
             with(holder.itemView) {
                 tag = item
