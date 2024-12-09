@@ -12,9 +12,7 @@ import network.xyo.app.xyo.sample.application.databinding.BoundwitnessDetailBind
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import network.xyo.client.boundwitness.XyoBoundWitnessJson
 import network.xyo.client.node.client.QueryResponseWrapper
-import org.json.JSONArray
 import org.json.JSONObject
 import org.json.JSONTokener
 
@@ -41,6 +39,7 @@ class ItemDetailFragment : Fragment() {
     // onDestroyView.
     private val binding get() = _binding!!
 
+    @OptIn(ExperimentalStdlibApi::class)
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,11 +47,12 @@ class ItemDetailFragment : Fragment() {
         arguments?.let {
             if (it.containsKey(ARG_ITEM_HASH)) {
                 val hash = it.getString(ARG_ITEM_HASH)
-                item = XyoPanelWrapper.boundWitnesses.find { item -> item.bwHash == hash }
+                item = XyoPanelWrapper.boundWitnesses.find { item -> item.bwHash?.toHexString() == hash }
             }
         }
     }
 
+    @OptIn(ExperimentalStdlibApi::class)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -61,7 +61,8 @@ class ItemDetailFragment : Fragment() {
         _binding = BoundwitnessDetailBinding.inflate(inflater, container, false)
         val rootView = binding.root
 
-        binding.toolbarLayout?.title = item?.bwHash?.substring(0, 10)
+        val hash = item?.bwHash?.toHexString()?.substring(0, 10)
+        binding.toolbarLayout?.title = hash
 
         jsonViewer = binding.jsonViewer
         // Show the placeholder content as text in a TextView.

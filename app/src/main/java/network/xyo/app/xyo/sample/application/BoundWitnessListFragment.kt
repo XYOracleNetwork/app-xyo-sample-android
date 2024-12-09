@@ -78,6 +78,7 @@ class BoundWitnessListFragment : Fragment() {
 
     }
 
+    @OptIn(ExperimentalStdlibApi::class)
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -103,7 +104,7 @@ class BoundWitnessListFragment : Fragment() {
             val bundle = Bundle()
             bundle.putString(
                 ItemDetailFragment.ARG_ITEM_HASH,
-                item.bwHash
+                item.bwHash?.toHexString()
             )
             if (itemDetailFragmentContainer != null) {
                 itemDetailFragmentContainer.findNavController()
@@ -179,10 +180,11 @@ class BoundWitnessListFragment : Fragment() {
 
         }
 
+        @OptIn(ExperimentalStdlibApi::class)
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val item = values[position]
-            holder.idView.text = item.bwHash?.substring(0, 5)
-            holder.contentView.text = item.bwHash?.substring(0, 5)
+            holder.idView.text = item.bwHash?.toHexString()?.substring(0, 5)
+            holder.contentView.text = item.bwHash?.toHexString()?.substring(0, 5)
 
             with(holder.itemView) {
                 tag = item

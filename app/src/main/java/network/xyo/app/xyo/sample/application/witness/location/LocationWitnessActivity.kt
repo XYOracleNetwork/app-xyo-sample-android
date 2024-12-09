@@ -18,9 +18,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import network.xyo.app.xyo.sample.application.Constants
 import network.xyo.app.xyo.sample.application.nodeUrl
-import network.xyo.client.boundwitness.XyoBoundWitnessBodyJson
+import network.xyo.client.boundwitness.BoundWitness
+import network.xyo.client.payload.Payload
 
-import network.xyo.client.payload.XyoPayload
 import network.xyo.client.witness.location.info.WitnessLocationHandler
 import network.xyo.client.witness.types.WitnessResult
 
@@ -81,7 +81,7 @@ class LocationWitnessActivity : LocationActivity() {
     private fun handleLocationWitness(context: Context, dispatcher: CoroutineDispatcher) {
         CoroutineScope(dispatcher).launch {
             when (val result = WitnessLocationHandler().witness(context, arrayListOf(Pair(nodeUrl, null)))) {
-                is WitnessResult.Success<Triple<XyoBoundWitnessBodyJson?, XyoPayload?, XyoPayload?>> -> {
+                is WitnessResult.Success<Triple<BoundWitness?, Payload?, Payload?>> -> {
                     handleResults(listOf(result.data.first, result.data.second, result.data.third), context)
                 }
                 is WitnessResult.Error -> {
@@ -93,11 +93,12 @@ class LocationWitnessActivity : LocationActivity() {
         }
     }
 
-    private fun handleResults(result: List<XyoPayload?>, context: Context) {
+    @OptIn(ExperimentalStdlibApi::class)
+    private fun handleResults(result: List<Payload?>, context: Context) {
         result.forEach {
             if (it !== null) {
                 val hash = it.dataHash()
-                hashes.addHash(hash)
+                hashes.addHash(hash.toHexString())
                 CoroutineScope(Dispatchers.Main).launch {
                     Toast.makeText(
                         context.applicationContext,
